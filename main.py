@@ -6,16 +6,16 @@ height = 400
 s = pygame.display.set_mode((width,height))
 p_clock = pygame.time.Clock()
 
-graph = [node.node(random.randint(int(width/3),int(2/3 * width)), random.randint(int(height/3), int(2/3 * height))) for x in range(100)]
+graph = [node.node(random.randint(int(width/3),int(2/3 * width)), random.randint(int(height/3), int(2/3 * height))) for x in range(200)]
 def dist(n1,n2): return abs(n1.x-n2.x)+abs(n1.y-n2.y)
 
 data = []
 
-repulsive_min_1 = 20
-repulsive_max_1 = 22
+repulsive_min_1 = 30
+repulsive_max_1 = 32
 repulsive_min_2 = 15
 repulsive_max_2 = 12
-viewing_range = 20
+viewing_range = 30
 
 while True:
 
@@ -43,9 +43,15 @@ while True:
 
 
         others = list(filter( lambda n: n!=n1 and dist(n,n1)<viewing_range, graph))
-        if (all([n.value == 255 for n in others]) or all([n.value != 255 for n in others])) and random.random()<0.9999:
-            n1.value = 0
-        else: n1.value = 255
+        #if (all([n.value == 255 for n in others]) or all([n.value != 255 for n in others])) and random.random()<0.9999: # V1
+        #if random.random() < 0.999 and all([n.value != 255 for n in others]): # V2
+        #if random.random() > 0.99 or sum([1 if n.value == 255 else 0 for n in others]) > 2: # V3
+        #if random.random() > 0.999 or sum([1 if n.value == 255 else 0 for n in others]) > 0: # V4
+
+        # Essentially this controls the probability of catalyst creation and the ease of contagion.
+        if random.random() > 0.995 or sum([1 if n.value == 255 else 0 for n in others]) > 1: # V5
+            n1.value = 255
+        else: n1.value = 0
 
         spd = 1
         for o in others:
